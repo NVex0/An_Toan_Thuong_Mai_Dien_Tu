@@ -104,6 +104,24 @@ Khi này, máy sẽ cố gắng connect vào con wifi thật kia, tuy nhiên PoC
 
 ![image](https://github.com/NVex0/An_Toan_Thuong_Mai_Dien_Tu/assets/113530029/8d66d8cb-d40b-4ce1-a8ce-260b7f75e1cf)
 
-Khi đã trick được nó connect vào rogue wifi, bắt đầu thực hiện KRACK lên quá trình bắt tay 4 bước:
+Khi đã trick được nó connect vào rogue wifi, ta đang ở vị trí "man in the middle" giữa wifi và người dùng. Ta có thể thay đổi nội dung các gói tin để nó bắt đầu thực hiện KRACK lên quá trình bắt tay 4 bước:
+
+![image](https://github.com/NVex0/An_Toan_Thuong_Mai_Dien_Tu/assets/113530029/0349a09e-be67-41d7-ba34-8466e8f37dd9)
+
+Trên Android và Linux, sau khi bị attack, nó sẽ sử dụng 1 khóa khác với khóa ban đầu, mà khóa mới này toàn bộ byte đều bằng 0 (all-zero encryption key). Điều này khiên các frame dữ liệu có thể dễ dàng bị sửa đổi hoặc chặn bắt. Như ở đây ta bắt các frame giao tiếp trên thiết bị nạn nhân, toàn bộ các frame dữ liệu được mã hóa bởi WPA2 đều đã bị chặn bắt và đọc được ở dạng plaintext:
+
+![image](https://github.com/NVex0/An_Toan_Thuong_Mai_Dien_Tu/assets/113530029/bc7747e7-7efb-4bf3-a261-18f7747d5202)
+
+Tiếp theo ta sử dụng tool `sslstrip` để disable HTTPS trên website này, bởi vì sau quá trình KRACK, ta có thể decrypt được data frame từ thiết bị của nạn nhân bởi khóa mà nạn nhân reuse lại. Tuy nhiên, sau khi decrypt được data frame encrypt bởi WPA2 layer, ví dụ như người dùng truy cập 1 trang web sử dụng HTTPS như ta đã nói ở đầu kia, thì kẻ tấn công chưa thể lấy được bất cứ thông tin từ web nào mà người dùng nhập. Vì thế ta disable HTTPS để có thể lấy được plaintext. Và ngoài thực tế thì tool này ít có tỉ lệ thành công:
+
+![image](https://github.com/NVex0/An_Toan_Thuong_Mai_Dien_Tu/assets/113530029/4a71ae92-8602-4365-877d-aadad87892e0)
+
+Truy cập lại web đã bị disable https, thử nhập 1 thông tin gì đấy lên, ở đây là username và password:
+
+![image](https://github.com/NVex0/An_Toan_Thuong_Mai_Dien_Tu/assets/113530029/ec0b8df0-ac6d-4322-a00e-8091c09058ce)
+
+Vào wireshark để bắt gói tin, ta đã thấy được các thông tin này đều ở dạng plaintext:
+
+![image](https://github.com/NVex0/An_Toan_Thuong_Mai_Dien_Tu/assets/113530029/a8e96f73-e4e0-4da7-a139-4cc30461c07a)
 
 
